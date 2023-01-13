@@ -1,7 +1,0 @@
-#!/bin/zsh
-function quit() {
-	echo "Bye"
-	unset _EBASH_RUNMODE
-	exit
-}
-
