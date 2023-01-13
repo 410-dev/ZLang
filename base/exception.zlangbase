@@ -1,0 +1,12 @@
+#!/bin/zsh
+
+function @exception_() {
+	if [[ ! -z "$_EBASH_EXCEPTION" ]]; then
+		echo "eBash ${_EBASH_EXCEPTION_TYPE} Exception: ${_EBASH_EXCEPTION}"
+		unset _EBASH_EXCEPTION _EBASH_EXCEPTION_TYPE
+		if [[ "$_EBASH_RUNMODE" == "SCRIPT" ]]; then
+			exit
+		fi
+	fi
+}
+

@@ -1,0 +1,20 @@
+#!/bin/zsh
+
+@import Foundation/string
+
+function Array.reverse() {
+	if [[ $(String.isNull "$1") ]]; then
+		syntaxException "Array.reverse - Syntax error: parameter not fully given. First parameter (Array) is required."
+	fi
+
+	if [[ $(String.isNull "$2") ]]; then
+		syntaxException "Array.reverse - Syntax error: parameter not fully given. Second parameter (Memory) is required."
+	fi
+	
+
+	declare -a arr="$1" rev="$2"
+    
+    for i in "${arr[@]}"; do
+        rev=("$i" "${rev[@]}")
+    done
+}

@@ -1,0 +1,25 @@
+#!/bin/zsh
+@import Foundation/exception
+@import Foundation/string
+
+function Hash.stringToMD5() {
+	if [[ $(String.isNull "$1") ]]; then
+		syntaxException "Hash.stringToMD5 - Parameter is not properly given."
+	else
+		md5 -qs "$1"
+	fi
+}
+
+function Hash.fileToMD5() {
+	if [[ $(String.isNull "$1") ]]; then
+		syntaxException "Hash.fileToMD5 - Parameter is not properly given."
+	else
+		if [[ $(File.isFile "$1") ]]; then 
+			md5 -q "$1"
+		else
+			runtimeException "Hash.fileToMD5 - No such file"
+		fi
+	fi
+}
+
+

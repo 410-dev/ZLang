@@ -1,0 +1,41 @@
+#!/bin/zsh
+
+@import Foundation/string
+
+export secureInputSalt=""
+
+function input() {
+	if [[ ! $(String.isNull "$1") ]]; then
+		echo -n "$1"
+	fi
+	read return
+	if [[ ! $(String.isNull "$2") ]]; then
+		export $2="$return"
+	else
+		echo "$return"
+	fi
+}
+
+function secureInput() {
+	if [[ ! $(String.isNull "$1") ]]; then
+		echo -n "$1"
+	fi
+
+	read -s return
+	export parse=($(echo "${return}${secureInputSalt}" | shasum -a 512))
+	if [[ ! $(String.isNull "$2") ]]; then
+		export $2="${parse[0]}"
+	else
+		echo "${parse[0]}"
+	fi
+	unset return
+}
+
+function setSecureInputSalt() {
+	export tmpBuffer=($(echo "$1" | shasum -a 512))
+	export secureInputSalt="${tmpBuffer[0]}"
+	unset tmpBuffer
+}
+
+
+

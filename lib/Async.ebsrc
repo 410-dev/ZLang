@@ -1,0 +1,42 @@
+#!/bin/zsh
+
+@import Foundation/string
+@import Foundation/exception
+
+function Async.start() {
+	if [[ $(String.isNull "$1") ]]; then
+		syntaxException "Async.start - Syntax error: parameter not fully given. First parameter (exported function) is required."
+	fi
+	$1 &
+	export buffer="$!"
+	if [[ $(String.isNull "$2") ]]; then
+		export $2="$buffer"
+	else
+		echo "$buffer"
+	fi
+	unset buffer
+}
+
+function Async.isAlive() {
+	if [[ $(String.isNull "$1") ]]; then
+		syntaxException "Async.isAlive - Syntax error: parameter not fully given. First parameter (PID) is required."
+	fi
+
+	if [[ $(ps -p "$1") ]]; then
+		if [[ $(String.isNull "$2") ]]; then
+			export $2="true"
+		else
+			echo "true"
+		fi
+	fi
+}
+
+function Async.kill() {
+	if [[ $(String.isNull "$1") ]]; then
+		syntaxException "Async.kill - Syntax error: parameter not fully given. First parameter (PID) is required."
+	fi
+	kill -9 "$1"
+}
+
+
+

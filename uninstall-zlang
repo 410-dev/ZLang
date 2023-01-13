@@ -1,0 +1,14 @@
+#!/bin/zsh
+
+while read toremove
+do
+	echo "Removing related file: $toremove"
+	sudo rm -rfv "$toremove"
+	if [[ "$?" != "0" ]]; then
+		echo "Error: Failed removing related file / directory."
+		exit 9
+	fi
+done <<< "$(cat "$ZLANG_HOME/receipt")"
+echo "eBash2 is Uninstalled."
+echo "Please remove eBash2 related codes from ~/.bashrc as well."
+exit 0

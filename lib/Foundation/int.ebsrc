@@ -1,0 +1,212 @@
+#!/bin/zsh
+
+@import Foundation/string
+
+function add() {
+	if [[ $(String.isNull "$1") ]] || [[ $(String.isNull "$2") ]]; then
+		export _EBASH_EXCEPTION="Addition operation"
+		export _EBASH_EXCPETION_TYPE="Syntax"
+		@exception_
+	else
+		export buffer=$(($1 + $2))
+		if [[ ! $(String.isNull $3) ]]; then
+			export $3=$buffer
+			declare -i $3
+		else
+			echo $buffer
+		fi
+	fi
+}
+
+function subtract() {
+	if [[ $(String.isNull "$1") ]] || [[ $(String.isNull "$2") ]]; then
+		export _EBASH_EXCEPTION="Subtraction operation"
+		export _EBASH_EXCPETION_TYPE="Syntax"
+		@exception_
+	else
+		export buffer=$(($1 - $2))
+		if [[ ! $(String.isNull $3) ]]; then
+			export $3=$buffer
+			declare -i $3
+		else
+			echo $buffer
+		fi
+	fi
+}
+
+function multiply() {
+	if [[ $(String.isNull "$1") ]] || [[ $(String.isNull "$2") ]]; then
+		export _EBASH_EXCEPTION="Multiplication operation"
+		export _EBASH_EXCPETION_TYPE="Syntax"
+		@exception_
+	else
+		export buffer=$(($1 * $2))
+		if [[ ! $(String.isNull $3) ]]; then
+			export $3=$buffer
+			declare -i $3
+		else
+			echo $buffer
+		fi
+	fi
+}
+
+function divide() {
+	if [[ $(String.isNull "$1") ]] || [[ $(String.isNull "$2") ]]; then
+		export _EBASH_EXCEPTION="Division operation"
+		export _EBASH_EXCPETION_TYPE="Syntax"
+		@exception_
+	else
+		if [[ "$2" == 0 ]]; then
+			export _EBASH_EXCEPTION="Number cannot be divided by 0"
+			export _EBASH_EXCPETION_TYPE="Runtime"
+			@exception_
+		else
+			export buffer=$(($1 / $2))
+			if [[ ! $(String.isNull $3) ]]; then
+				export $3=$buffer
+				declare -i $3
+			else
+				echo $buffer
+			fi
+		fi
+	fi
+}
+
+function modulus() {
+	if [[ $(String.isNull "$1") ]] || [[ $(String.isNull "$2") ]]; then
+		export _EBASH_EXCEPTION="Modulus operation"
+		export _EBASH_EXCPETION_TYPE="Syntax"
+		@exception_
+	else
+		if [[ "$2" == 0 ]]; then
+			export _EBASH_EXCEPTION="Number cannot be divided by 0"
+			export _EBASH_EXCPETION_TYPE="Runtime"
+			@exception_
+		else
+			export buffer=$(($1 % $2))
+			if [[ ! $(String.isNull $3) ]]; then
+				export $3=$buffer
+				declare -i $3
+			else
+				echo $buffer
+			fi
+		fi
+	fi
+}
+
+
+function @int() {
+	if [[ $(String.isNull "$1") ]]; then
+		export _EBASH_EXCEPTION="Integer declaration"
+		export _EBASH_EXCPETION_TYPE="Syntax"
+		@exception_
+	else
+		if [[ $(String.isNull "$2") ]] && [[ ! $(String.contains "$1" "=") ]]; then
+			export _EBASH_EXCEPTION="Integer declaration"
+			export _EBASH_EXCPETION_TYPE="Syntax"
+			@exception_
+		fi
+
+		if [[ "$2" == "=" ]] && [[ ! $(String.isNull "$3") ]]; then
+			export $1=$3
+			export varname=$1
+		elif [[ $(String.contains "$1" "=") ]]; then
+			String.split "$1" "=" vsplit
+			export ${vsplit[0]}=${vsplit[1]}
+			export varname=${vsplit[0]}
+			unset vsplit
+		else
+			export $1=$2
+		fi
+		declare -i $1
+		unset varname
+	fi
+}
+
+function increment() {
+	if [[ $(String.isNull "$1") ]] || [[ $(String.isNull "$2") ]]; then
+		export _EBASH_EXCEPTION="Integer declaration"
+		export _EBASH_EXCPETION_TYPE="Syntax"
+		@exception_
+	else
+		if [[ $(String.isNull "$3") ]]; then
+			export incrementer=$3
+		else
+			export incrementer=1
+		fi
+		export buffer=$(add $2 $incrementer)
+		export $1=$buffer
+		declare -i $1
+		unset incrementer
+		unset buffer
+	fi
+}
+
+function isFrontGreater() {
+	if [[ $1 -gt $2 ]]; then
+		if [[ $(String.isNull "$3") ]]; then
+			echo "true"
+		else
+			export $3="true"
+		fi
+	fi
+}
+
+function isBackGreater() {
+	if [[ $2 -gt $1 ]]; then
+		if [[ $(String.isNull "$3") ]]; then
+			echo "true"
+		else
+			export $3="true"
+		fi
+	fi
+}
+
+function isFrontLesser() {
+	if [[ $1 -lt $2 ]]; then
+		if [[ $(String.isNull "$3") ]]; then
+			echo "true"
+		else
+			export $3="true"
+		fi
+	fi
+}
+
+function isBackLesser() {
+	if [[ $2 -lt $1 ]]; then
+		if [[ $(String.isNull "$3") ]]; then
+			echo "true"
+		else
+			export $3="true"
+		fi
+	fi
+}
+
+function randomInt() {
+	# First parameter: minimum value
+	# Second parameter: maximum value
+	# Third parameter: variable name
+
+	if [[ $(String.isNull "$1") ]] || [[ $(String.isNull "$2") ]]; then
+		export _EBASH_EXCEPTION="Random integer generation (Missing parameters)"
+		export _EBASH_EXCPETION_TYPE="Syntax"
+		@exception_
+	else
+		if [[ $(String.isNull "$3") ]]; then
+			export buffer=$(($RANDOM % $2 + $1))
+			echo $buffer
+		else
+			export buffer=$(($RANDOM % $2 + $1))
+			export $3=$buffer
+			declare -i $3
+		fi
+	fi
+}
+
+
+
+
+
+
+
+

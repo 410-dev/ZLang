@@ -1,0 +1,58 @@
+#!/bin/zsh
+@import Foundation/exception
+@import Foundation/string
+@import File/check
+@import File/new
+@import File/attribute
+
+function File.compress() {
+	if [[ $(String.isNull "$1") ]]; then
+		syntaxException "File.compress - Parameter is not properly given."
+	else
+		if [[ ! $(File.exists "$1") ]]; then
+			runtimeException "File.compress - Path does not exist."
+		else
+			export CWD="$(pwd)"
+			cd "$(dirname "$1")"
+			export fname="$(basename "$1")"
+			if [[ $(File.isDirectory "$fname") ]]; then
+				cd "$fname"
+				zip -rqq "$fname.zip" "./"
+				File.rename "./$fname.zip" "../$fname.zip"
+			else
+				zip -rqq "$fname.zip" "$fname"
+			fi
+			cd "$CWD"
+			unset CWD fname
+		fi
+	fi
+}
+
+function File.compressAbsolutePathStructure() {
+	if [[ $(String.isNull "$1") ]]; then
+		syntaxException "File.compressAbsolutePathStructure - Parameter is not properly given."
+	else
+		if [[ ! $(File.exists "$1") ]]; then
+			runtimeException "File.compressAbsolutePathStructure - Path does not exist: $1"
+		else
+			zip -rqq "$1.zip" "$1"
+		fi
+	fi
+}
+
+function File.decompress() {
+	if [[ $(String.isNull "$1") ]] || [[ $(String.isNull "$2") ]] ; then
+		syntaxException "File.decompress - Parameter is not properly given."
+	else
+		if [[ ! $(File.isFile "$1") ]]; then
+			runtimeException "File.decompress - Compressed zip file does not exist: $1"
+		else
+			File.createDirectory "$2"
+			unzip -o -q "$1" -d "$2"
+		fi
+	fi
+}
+
+
+
+

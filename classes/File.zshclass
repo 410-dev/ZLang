@@ -1,0 +1,92 @@
+#!/bin/zsh
+@import Foundation/string
+
+class File() {
+    @superclass Object
+
+    global path "$@"
+
+    function isNull() {
+        if [[ $(String.isNull "$(this get path)") ]]; then
+            echo true
+        fi
+    }
+
+    function isFile() {
+        isNull
+        if [[ $(isNull) ]]; then
+            return
+        fi
+
+        if [[ -f "$(this get path)" ]]; then
+            echo true
+        fi
+    }
+
+    function isDirectory() {
+        if [[ $(isNull) ]]; then
+            return
+        fi
+
+        if [[ -d "$(this get path)" ]]; then
+            echo true
+        fi
+    }
+
+    function exists() {
+        if [[ $(isNull) ]]; then
+            return
+        fi
+
+        if [[ -e "$(this get path)" ]]; then
+            echo true
+        fi
+    }
+
+    function delete() {
+        if [[ $(isNull) ]]; then
+            return
+        fi
+
+        rm -rf "$(this get path)"
+        return $?
+    }
+
+    function mkdir() {
+        if [[ $(isNull) ]]; then
+            return
+        fi
+
+        mkdir -p "$(this get path)"
+        return $?
+    }
+
+    function read() {
+        if [[ $(isNull) ]]; then
+            return
+        fi
+
+        cat "$(this get path)"
+        return $?
+    }
+
+    function write() {
+        if [[ $(isNull) ]]; then
+            return
+        fi
+
+        echo "$1" > "$(this get path)"
+        return $?
+    }
+
+    function append() {
+        if [[ $(isNull) ]]; then
+            return
+        fi
+
+        echo "$1" >> "$(this get path)"
+        return $?
+    }
+
+    execute "$@"
+}

@@ -1,0 +1,52 @@
+#!/bin/zsh
+
+@import Foundation/string
+
+function GnomeDisplay.getDisplay() {
+    buffer="$(xrandr | grep " connected" | cut -f1 -d " ")"
+    if [[ ! $(String.isNull $1) ]]; then
+        export $1="$buffer"
+        unset buffer
+    else
+        echo "$buffer"
+        unset buffer
+    fi
+}
+
+function GnomeDisplay.getDeviceCount() {
+    buffer="$(xrandr | grep " connected" | wc -l)"
+    if [[ ! $(String.isNull $1) ]]; then
+        export $1="$buffer"
+        unset buffer
+    else
+        echo "$buffer"
+        unset buffer
+    fi
+}
+
+function GnomeDisplay.getBrightness() {
+    buffer="`xrandr --verbose | grep -m 1 -i brightness | cut -f2 -d ' '`"
+    if [[ ! $(String.isNull $1) ]]; then
+        export $1="$buffer"
+        unset buffer
+    else
+        echo "$buffer"
+        unset buffer
+    fi
+}
+
+function GnomeDisplay.setBrightness() {
+    if [[ ! $(String.isNull $1) ]] && [[ ! $(String.isNull $2) ]]; then
+        xrandr --output $1 --brightness $2
+    else
+        if [[ $(String.isNull $1) ]]; then
+            export _EBASH_EXCEPTION="Display name"
+            export _EBASH_EXCPETION_TYPE="Syntax"
+            @exception_
+        else
+            export _EBASH_EXCEPTION="Brightness value"
+            export _EBASH_EXCPETION_TYPE="Syntax"
+            @exception_
+        fi
+    fi
+}

@@ -1,0 +1,26 @@
+#!/bin/zsh
+function @import() {
+	if [[ ! -z "$1" ]]; then
+		if [[ -f "${ZLANG_HOME}/lib/$1.ebsrc" ]]; then
+			source "${ZLANG_HOME}/lib/$1.ebsrc"
+		elif [[ -d "${ZLANG_HOME}/lib/$1" ]]; then
+			export WORKSPACE="$PWD"
+			cd "${ZLANG_HOME}/lib/$1"
+			while read DATAFILE
+			do
+				source "${DATAFILE}"
+			done <<< "$(ls -1 | grep ".ebsrc")"
+			cd "${WORKSPACE}"
+			unset WORKSPACE
+		else
+			export _EBASH_EXCEPTION="@import: Library \"$1\" not found"
+			export _EBASH_EXCPETION_TYPE="Runtime"
+			@exception_
+		fi
+	else
+		export _EBASH_EXCEPTION="@import: Missing target"
+		export _EBASH_EXCPETION_TYPE="Runtime"
+		@exception_
+	fi
+}
+

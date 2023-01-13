@@ -1,0 +1,22 @@
+#!/bin/zsh
+@import Foundation/exception
+@import Foundation/string
+@import File/check
+
+function File.readString() {
+	if [[ $(String.isNull "$1") ]]; then
+		syntaxException "File.readString - Parameter is not properly given."
+	else
+		if [[ ! $(File.isFile "$1") ]]; then
+			runtimeException "File.readString - File does not exist: $1"
+		else
+			if [[ $(String.isNull "$2") ]]; then
+				cat "$1"
+			else
+				export $2="$(cat "$1")"
+			fi
+		fi
+	fi
+}
+
+

@@ -1,0 +1,143 @@
+#!/bin/zsh
+
+@import Foundation/string
+
+function @float() {
+	if [[ $(String.isNull "$1") ]] || [[ $(String.isNull "$2") ]]; then
+		export _EBASH_EXCEPTION="Float declaration"
+		export _EBASH_EXCPETION_TYPE="Syntax"
+		@exception_
+	else
+		if [[ $(String.isNull "$2") ]] && [[ ! $(String.contains "$1" "=") ]]; then
+			export _EBASH_EXCEPTION="Float declaration"
+			export _EBASH_EXCPETION_TYPE="Syntax"
+			@exception_
+		fi
+
+		if [[ "$2" == "=" ]] && [[ ! $(String.isNull "$3") ]]; then
+			export $1=$(echo "scale=30; $3" | bc)
+		elif [[ $(String.contains "$1" "=") ]]; then
+			String.split "$1" "=" vsplit
+			export ${vsplit[0]}=$(echo "scale=30; ${vsplit[1]}" | bc)
+			unset vsplit
+		else
+			export $1=$(echo "scale=30; $2" | bc)
+		fi
+	fi
+}
+
+function addf() {
+	if [[ $(String.isNull "$1") ]] || [[ $(String.isNull "$2") ]]; then
+		export _EBASH_EXCEPTION="Addition operation"
+		export _EBASH_EXCPETION_TYPE="Syntax"
+		@exception_
+	else
+		export buffer=$(echo ${1} + ${2} | bc -l)
+		if [[ ! $(String.isNull "$3") ]]; then
+			export $3=$buffer
+		else
+			echo $buffer
+		fi
+	fi
+}
+
+function subtractf() {
+	if [[ $(String.isNull "$1") ]] || [[ $(String.isNull "$2") ]]; then
+		export _EBASH_EXCEPTION="Subtraction operation"
+		export _EBASH_EXCPETION_TYPE="Syntax"
+		@exception_
+	else
+		export buffer=$(echo $1 - $2 | bc -l)
+		if [[ ! $(String.isNull "$3") ]]; then
+			export $3=$buffer
+		else
+			echo $buffer
+		fi
+	fi
+}
+
+function multiplyf() {
+	if [[ $(String.isNull "$1") ]] || [[ $(String.isNull "$2") ]]; then
+		export _EBASH_EXCEPTION="Multiplication operation"
+		export _EBASH_EXCPETION_TYPE="Syntax"
+		@exception_
+	else
+		export buffer=$(echo $1 \* $2 | bc -l)
+		if [[ ! $(String.isNull "$3") ]]; then
+			export $3=$buffer
+		else
+			echo $buffer
+		fi
+	fi
+}
+
+function dividef() {
+	if [[ $(String.isNull "$1") ]] || [[ $(String.isNull "$2") ]]; then
+		export _EBASH_EXCEPTION="Division operation"
+		export _EBASH_EXCPETION_TYPE="Syntax"
+		@exception_
+	else
+		if [[ "$2" == 0 ]]; then
+			export _EBASH_EXCEPTION="Number cannot be divided by 0"
+			export _EBASH_EXCPETION_TYPE="Runtime"
+			@exception_
+		else
+			export buffer=$(echo "scale=30; $a / $b" | bc)
+			if [[ ! $(String.isNull "$3") ]]; then
+				export $3=$buffer
+			else
+				echo $buffer
+			fi
+		fi
+	fi
+}
+
+function isFrontFloatGreater() {
+	if (( $(echo "$1 > $2" |bc -l) )); then
+		if [[ $(String.isNull "$3") ]]; then
+			echo "true"
+		else
+			export $3="true"
+		fi
+	fi
+}
+
+
+function isBackFloatGreater() {
+	if (( $(echo "$1 < $2" |bc -l) )); then
+		if [[ $(String.isNull "$3") ]]; then
+			echo "true"
+		else
+			export $3="true"
+		fi
+	fi
+}
+
+function isFrontFloatLesser() {
+	if (( $(echo "$1 < $2" |bc -l) )); then
+		if [[ $(String.isNull "$3") ]]; then
+			echo "true"
+		else
+			export $3="true"
+		fi
+	fi
+}
+
+function isBackFloatLesser() {
+	if (( $(echo "$1 > $2" |bc -l) )); then
+		if [[ $(String.isNull "$3") ]]; then
+			echo "true"
+		else
+			export $3="true"
+		fi
+	fi
+}
+
+
+
+
+
+
+
+
+

@@ -1,0 +1,46 @@
+#!/bin/zsh
+
+# Check if running in zsh
+if [[ ! "$0" == "zsh" ]]; then
+	echo "Warning: Seems you're not in zsh environment."
+fi
+
+# Will return to parent working directory
+export ORIGH="$(pwd)"
+
+# Set the root directory for eBash
+if [[ -z "$ZLANG_HOME" ]]; then
+	export ZLANG_HOME="$(dirname "$(readlink -f "$0")")"
+elif [[ ! -z "$1" ]]; then
+	export ZLANG_HOME="$1"
+fi
+
+# Load all zlangbase using for loop
+cd "${ZLANG_HOME}/base" 2>/dev/null
+if [[ "$?" != "0" ]]; then
+	echo "Error: Unable to locate and enter ZLANG_HOME."
+	exit 9
+fi
+while read DATAFILE
+do
+	# Load
+	source "${DATAFILE}" 2>/dev/null
+	if [[ "$?" != "0" ]]; then
+		echo "Error: Failed loading base component."
+		exit 9
+	fi
+
+done <<< "$(ls -1 | grep ".zlangbase")"
+
+# Return to parent working directory and remove the memory
+cd "$ORIGH" 2>/dev/null
+if [[ "$?" != "0" ]]; then
+	echo "Error: Failed to enter original working directory."
+	exit 9
+fi
+
+unset ORIGH 2>/dev/null
+
+if [[ "$EBASH_PREP_PRINT" == "1" ]]; then
+	echo "eBash environment preparation successful."
+fi

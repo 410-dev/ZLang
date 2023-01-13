@@ -1,0 +1,60 @@
+#!/bin/zsh
+
+function @superclass() {
+    source "$ZLANG_HOME/classes/$1.zshclass"
+}
+
+alias class='function'
+alias free='unset'
+
+# Object builder
+function new() {
+
+    # Get object name
+    local name=$1
+    local _as=$2
+    local as=$3
+
+    # Syntax check
+    if [[ "${_as}" != "as" ]]; then
+        echo "Syntax error: 'as' expected" >&2
+        return 1
+    elif [[ "$as" == "" ]]; then
+        echo "Syntax error: object name expected" >&2
+        return 1
+    elif [[ "$as" == "$name" ]]; then
+        echo "Syntax error: object name cannot be same as class name" >&2
+        return 1
+    fi
+    
+    # Check existence
+    if [ ! -f "${ZLANG_HOME}/classes/${name}.zshclass" ]; then
+        if [[ -z $(which ${name}) ]]; then
+            return 1
+        else
+            export LOCALCLASS=true
+        fi
+    fi
+
+    # Create object
+    if [[ -z $LOCALCLASS ]]; then
+        source "${ZLANG_HOME}/classes/${name}.zshclass"
+    fi
+
+    oldname=$1
+    newname=$3
+    local code=$(echo "function $newname () {";  which $oldname | tail -n +2)
+
+    
+    if [[ -z $LOCALCLASS ]]; then
+        unset -f $oldname
+    fi
+    unset LOCALCLASS
+    eval "$code"
+
+    # Call constructor
+    $newname new "$@"
+
+    # Return object
+    return 0
+}

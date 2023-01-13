@@ -1,0 +1,43 @@
+#!/bin/zsh
+@import Foundation/string
+@import Foundation/exception
+@import File/check
+
+function File.copyFile() {
+	if [[ $(String.isNull "$1") ]] || [[ $(String.isNull "$2") ]]; then
+		syntaxException "File.copyFile - Parameters are not properly given."
+	else
+		if [[ $(File.isFile "$1") ]]; then
+			if [[ $(File.isDirectory "$2") ]]; then
+				cp "$3" "$1" "$2"
+			else
+				runtimeException "File.copyFile - No such directory: $1"
+			fi
+		else
+			runtimeException "File.copyFile - No such file: $1"
+		fi
+	fi
+}
+
+function File.copyDirectory() {
+	if [[ $(String.isNull "$1") ]] || [[ $(String.isNull "$2") ]]; then
+		syntaxException "File.copyDirectory - Parameters are not properly given: $1"
+	else
+		if [[ $(File.isDirectory "$1") ]]; then
+			if [[ $(File.isDirectory "$2") ]]; then
+				if [[ $(String.endsWith "$1" "/") ]]; then
+					cp -r "$1"* "$2"
+				else
+					cp -r "$1" "$2"
+				fi
+			else
+				runtimeException "File.copyDirectory - No such directory. (Destination): $1"
+			fi
+		else
+			runtimeException "File.copyDirectory - No such directory. (Source): $1"
+		fi
+	fi
+}
+
+
+

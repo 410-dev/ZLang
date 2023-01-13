@@ -1,0 +1,12 @@
+#!/bin/zsh
+@import Foundation/exception
+@import Foundation/string
+
+function File.list() {
+	if [[ $(String.isNull "$1") ]]; then
+		syntaxException "File.list - Parameter not properly given."
+	else
+		ls "-1$2" "$1"
+	fi
+}
+

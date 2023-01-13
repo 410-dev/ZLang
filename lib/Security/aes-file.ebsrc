@@ -1,0 +1,60 @@
+#!/bin/zsh
+
+@import File/check
+@import File/attribute
+
+@import Foundation/string
+@import Foundation/exception
+
+
+# Parameters:
+#   $1 - file path
+#   $2 - key
+function Security.AES256FileEncrypt() {
+	if [[ $(String.isNull "$(which openssl)") ]]; then
+		runtimeException "Security.AES256FileEncrypt - OpenSSL is not installed."
+	fi
+
+	if [[ $(String.isNull "$1") ]]; then
+		runtimeException "Security.AES256FileEncrypt - File path is not specified."
+	fi
+
+	if [[ $(String.isNull "$2") ]]; then
+		runtimeException "Security.AES256FileEncrypt - Key is not specified."
+	fi
+
+	if [[ ! $(File.isFile "$1") ]]; then
+		runtimeException "Security.AES256FileEncrypt - File '$1' does not exist."
+	fi
+
+	openssl aes-256-cbc -in "$1" -out "$1.e" -k "$2"
+	File.rename "$1.e" "$1" overwrite
+}
+
+
+# Parameters:
+#   $1 - file path
+#   $2 - key
+function Security.AES256FileDecrypt() {
+	if [[ $(String.isNull "$(which openssl)") ]]; then
+		runtimeException "Security.AES256FileDecrypt - OpenSSL is not installed."
+	fi
+
+	if [[ $(String.isNull "$1") ]]; then
+		runtimeException "Security.AES256FileDecrypt - File path is not specified."
+	fi
+
+	if [[ $(String.isNull "$2") ]]; then
+		runtimeException "Security.AES256FileDecrypt - Key is not specified."
+	fi
+
+	if [[ ! $(File.isFile "$1") ]]; then
+		runtimeException "Security.AES256FileDecrypt - File '$1' does not exist."
+	fi
+
+	openssl aes-256-cbc -in "$1" -out "$1.d" -d -k "$2"
+	File.rename "$1.d" "$1" overwrite
+}
+
+
+

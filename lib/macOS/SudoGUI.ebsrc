@@ -1,0 +1,17 @@
+#!/bin/zsh
+
+@import Foundation/string
+
+function MacOSSudoGUI.run() {
+	if [[ ! $(String.isNull "$1") ]]; then
+		osascript -e "do shell script \"bash -i -c "$1"\" with administrator privileges"
+		export exitbuffer="$?"
+		if [[ ! $(String.isNull "$2") ]]; then
+			export $2="$exitbuffer"
+		fi
+		unset exitbuffer
+	else
+		syntaxException "MacOSSudoGUI.run - Command in string form not given."
+	fi
+}
+

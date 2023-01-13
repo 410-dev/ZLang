@@ -1,0 +1,57 @@
+#!/bin/zsh
+@import Foundation/exception
+@import Foundation/string
+@import Foundation/out
+@import File/check
+
+function File.newFile() {
+	if [[ $(String.isNull "$1") ]]; then
+		syntaxException "File.newFile - Parameter is not properly given."
+	else
+		if [[ $(File.isFile "$1") ]]; then
+			runtimeException "File.newFile - File already exists: $1"
+		else
+			echo "$2" > "$1"
+		fi
+	fi
+}
+
+function File.overwrite() {
+	if [[ $(String.isNull "$1") ]]; then
+		syntaxException "File.overwrite - Parameter is not properly given."
+	else
+		echo "$2" > "$1"
+	fi
+}
+
+function File.createDirectory() {
+	if [[ $(String.isNull "$1") ]]; then
+		syntaxException "File.createDirectory - Parameter is not properly given."
+	else
+		if [[ $(File.isFile "$1") ]]; then
+			runtimeException "File.createDirectory - Directory already exists: $1"
+		else
+			mkdir "-p$2" "$1"
+			unset param
+		fi
+	fi
+}
+
+function File.append() {
+	if [[ $(String.isNull "$1") ]] || [[ $(String.isNull "$2") ]]; then
+		syntaxException "File.append - Parameter is not properly given."
+	else
+		if [[ ! $(File.isFile "$1") ]] && [[ ! "$3" == "--create" ]]; then
+			runtimeException "File.append - File does not exists: $1"
+		else
+			echo "$2" >> "$1"
+		fi
+	fi
+}
+
+
+
+
+
+
+

@@ -1,0 +1,127 @@
+#!/bin/zsh
+
+@import Foundation/string
+
+class Integer() {
+    @superclass Object
+
+    global value "$@"
+
+    function toString() {
+        echo "$(this get value)"
+    }
+
+    function toInt() {
+        echo "$(this get value)"
+    }
+
+    function add() {
+        if [[ $(String.isNull "$1") ]]; then
+            export _EBASH_EXCEPTION="Addition operation"
+            export _EBASH_EXCPETION_TYPE="Syntax"
+            @exception_
+        else
+            export buffer=$(($(this get value) + $1))
+            this set value "$buffer"
+        fi
+    }
+
+    function subtract() {
+        if [[ $(String.isNull "$1") ]]; then
+            export _EBASH_EXCEPTION="Subtraction operation"
+            export _EBASH_EXCPETION_TYPE="Syntax"
+            @exception_
+        else
+            export buffer=$(($(this get value) - $1))
+            this set value "$buffer"
+        fi
+    }
+
+    function multiply() {
+        if [[ $(String.isNull "$1") ]]; then
+            export _EBASH_EXCEPTION="Multiplication operation"
+            export _EBASH_EXCPETION_TYPE="Syntax"
+            @exception_
+        else
+            export buffer=$(($(this get value) * $1))
+            this set value "$buffer"
+        fi
+    }
+
+    function divide() {
+        if [[ $(String.isNull "$1") ]]; then
+            export _EBASH_EXCEPTION="Division operation"
+            export _EBASH_EXCPETION_TYPE="Syntax"
+            @exception_
+        else
+            if [[ "$1" == 0 ]]; then
+                export _EBASH_EXCEPTION="Number cannot be divided by 0"
+                export _EBASH_EXCPETION_TYPE="Runtime"
+                @exception_
+            else
+                export buffer=$(($(this get value) / $1))
+                this set value "$buffer"
+            fi
+        fi
+    }
+
+    function modulus() {
+        if [[ $(String.isNull "$1") ]]; then
+            export _EBASH_EXCEPTION="Modulus operation"
+            export _EBASH_EXCPETION_TYPE="Syntax"
+            @exception_
+        else
+            if [[ "$1" == 0 ]]; then
+                export _EBASH_EXCEPTION="Number cannot be divided by 0"
+                export _EBASH_EXCPETION_TYPE="Runtime"
+                @exception_
+            else
+                export buffer=$(($(this get value) % $1))
+                this set value "$buffer"
+            fi
+        fi
+    }
+
+    function isGreaterThan() {
+        if [[ $(this get value) -gt $1 ]]; then
+            if [[ $(String.isNull "$2") ]]; then
+                echo "true"
+            else
+                export $2="true"
+            fi
+        fi
+    }
+
+    function isLesserThan() {
+        if [[ $1 -gt $(this get value) ]]; then
+            if [[ $(String.isNull "$2") ]]; then
+                echo "true"
+            else
+                export $2="true"
+            fi
+        fi
+    }
+
+    function random() {
+        # First parameter: minimum value
+        # Second parameter: maximum value
+
+        if [[ $(String.isNull "$1") ]] || [[ $(String.isNull "$2") ]]; then
+            export _EBASH_EXCEPTION="Random integer generation (Missing parameters)"
+            export _EBASH_EXCPETION_TYPE="Syntax"
+            @exception_
+        else
+            export buffer=$(($RANDOM % $2 + $1))
+            this set value "$buffer"
+        fi
+    }
+
+
+
+
+
+
+
+
+    execute "$@"
+}

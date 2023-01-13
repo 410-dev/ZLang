@@ -1,0 +1,11 @@
+#!/bin/zsh
+
+@import Foundation/string
+
+function Date.getTimeStamp() {
+	if [[ $(String.isNull $1) ]]; then
+		echo "$(date '+%Y-%m-%d %H:%M:%S')"
+	else
+		export $1="$(date '+%Y-%m-%d %H:%M:%S')"
+	fi
+}

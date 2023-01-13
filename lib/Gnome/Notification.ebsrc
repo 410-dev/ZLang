@@ -1,0 +1,54 @@
+#!/bin/zsh
+
+@import Foundation/string
+
+export GNNOTIFTITLE=""
+export GNNOTIFMESSAGE=""
+
+function GnomeNotification.setTitle() {
+	if [[ $(String.isNull "$1") ]]; then
+		export GNNOTIFTITLE=""
+	else
+		export GNNOTIFTITLE="$1"
+	fi
+}
+
+function GnomeNotification.setMessage() {
+	if [[ $(String.isNull "$1") ]]; then
+		export GNNOTIFMESSAGE=""
+	else
+		export GNNOTIFMESSAGE="$1"
+	fi
+}
+
+function GnomeNotification.clear() {
+	export GNNOTIFTITLE=""
+	export GNNOTIFMESSAGE=""
+}
+
+function GnomeNotification.sendNotification() {
+    if [[ ! $(String.isNull "$1") ]]; then
+        if [[ ! $(String.isNull "$2") ]]; then
+            notify-send "$1" "$2"
+        else
+            notify-send "$1"
+        fi
+    else
+        notify-send " "
+    fi
+}
+
+function GnomeNotification.display() {
+
+	if [[ ! $(String.isNull "$GNNOTIFMESSAGE") ]]; then
+		data="$GNNOTIFMESSAGE"
+	fi
+
+	if [[ ! $(String.isNull "$GNNOTIFTITLE") ]]; then
+		export title="$GNNOTIFTITLE"
+	fi
+
+    notify-send "$title" "$data"
+
+	unset data title
+}

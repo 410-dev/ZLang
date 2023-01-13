@@ -1,0 +1,20 @@
+#!/bin/zsh
+@import Foundation/string
+
+function syntaxException() {
+	if [[ ! "$(String.isNull "$1")" ]]; then
+		export _EBASH_EXCEPTION="$1"
+		export _EBASH_EXCPETION_TYPE="Syntax"
+		@exception_
+	fi
+}
+
+function runtimeException() {
+	if [[ ! "$(String.isNull "$1")" ]]; then
+		export _EBASH_EXCEPTION="$1"
+		export _EBASH_EXCPETION_TYPE="Runtime"
+		@exception_
+	fi
+}
+
+

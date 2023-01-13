@@ -1,0 +1,71 @@
+#!/bin/zsh
+
+function free() {
+    unset -f $funcstack[-1]
+}
+
+function instanceName() {
+    echo $funcstack[-1]
+}
+
+function toString() {
+    echo "Object: $funcstack[-1]"
+}
+
+function execute() {
+    local FUNCTION_NAME="$2"
+    local OPERATION="$1"
+
+    if [[ "$OPERATION" == "." ]]; then
+        # Run function
+        $FUNCTION_NAME ${@:3}
+    elif [[ "$OPERATION" == "new" ]]; then
+        # Create new object
+        :
+    else
+        toString
+    fi
+}
+
+function global() {
+    # First argument: variable name
+    # Second argument: arguments
+
+    # Loop through arguments
+    loopcount=0
+    for arg in ${@:2}; do
+        # Check if argument is variable
+        if [[ "$loopcount" == "1" ]]; then
+            # Set variable
+            varname=${funcstack[-2]}_${1}
+            if [[ "$arg" == "_" ]]; then
+                arg=""
+            elif [[ "$arg" == "\_" ]]; then
+                arg="_"
+            fi
+            export $varname="$arg"
+            break
+        fi
+        if [[ "$arg" == "$1" ]]; then
+            loopcount=$((loopcount+1))
+        fi
+    done
+}
+
+function this() {
+    if [[ $1 == "set" ]]; then
+        varname=${funcstack[-1]}_${2}
+        export $varname="$3"
+    elif [[ $1 == "get" ]]; then
+        # First argument: variable name
+        
+        # Get variable
+        varname=${funcstack[-1]}_${2}
+        echo "$(eval echo $(eval 'echo \${'$varname'}'))"
+        
+        # Exit function with 0
+        return 0
+    else
+        echo "Syntax error: 'set' or 'get' expected" >&2
+    fi
+}

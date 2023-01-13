@@ -1,0 +1,41 @@
+#!/bin/zsh
+@import Foundation/exception
+@import Foundation/string
+@import File/check
+
+function File.setHidden() {
+	if [[ $(String.isNull "$1") ]] || [[ $(String.isNull "$2") ]]; then
+		syntaxException "File.setHidden - Parameters are not properly given."
+	else
+		if [[ $(File.exists "$2") ]]; then
+			runtimeException "File.setHidden - No such file or directory: $1"
+		fi
+		if [[ "$1" == "true" ]]; then
+			chflags hidden "$2"
+		elif [[ "$1" == "false" ]]; then
+			chflags nohidden "$2"
+		else
+			runtimeException "File.setHidden - Value is not given as boolean format."
+		fi
+	fi
+}
+
+function File.rename() {
+	if [[ $(String.isNull "$1") ]] || [[ $(String.isNull "$2") ]]; then
+		syntaxException "File.rename - Parameters are not properly given."
+	else
+		if [[ $(File.exists "$2") ]] && [[ ! "$3" == "overwrite" ]]; then
+			runtimeException "File.rename - There is already a file with the same name as destination: $2"
+		elif [[ ! $(File.exists "$1") ]]; then
+			runtimeException "File.rename - No such file or directory: $1"
+		else
+			if [[ "$3" == "overwrite" ]]; then
+				mv -f "$1" "$2"
+			else
+				mv "$1" "$2"
+			fi
+		fi
+	fi
+}
+
+

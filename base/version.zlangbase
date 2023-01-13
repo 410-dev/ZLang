@@ -1,0 +1,16 @@
+#!/bin/zsh
+export EBVERSION="1.0.0alpha1"
+export EBVERSION_MAJOR=1
+export EBVERSION_MINOR=0
+export EBVERSION_REVISION=0
+export EBVERSION_EDITION="alpha1"
+
+function @version() {
+	echo "ZLang Version - $EBVERSION"
+	echo "Warning: This is a test version and may occur unexpected behaviour."
+}
+
+declare -i EBVERSION_MAJOR
+declare -i EBVERSION_MINOR
+declare -i EBVERSION_REVISION
+

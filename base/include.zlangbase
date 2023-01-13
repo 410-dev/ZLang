@@ -1,0 +1,27 @@
+#!/bin/zsh
+function @include() {
+	if [[ ! -z "$1" ]]; then
+		if [[ -f "$1" ]]; then
+			source "$1"
+		elif [[ -d "$1" ]]; then
+			export WORKSPACE="$PWD"
+			cd "$1"
+			while read DATAFILE
+			do
+				source "${DATAFILE}"
+			done <<< "$(ls -1 | grep ".ebsrc")"
+			cd "${WORKSPACE}"
+			unset WORKSPACE
+		else
+			export _EBASH_EXCEPTION="@include: EBSource \"$1\" not found"
+			export _EBASH_EXCPETION_TYPE="Runtime"
+			@exception_
+		fi
+	else
+		export _EBASH_EXCEPTION="@include: Missing target"
+		export _EBASH_EXCPETION_TYPE="Runtime"
+		@exception_
+	fi
+}
+
+

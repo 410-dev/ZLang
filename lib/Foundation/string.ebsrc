@@ -1,0 +1,176 @@
+#!/bin/zsh
+
+function String.isNull() {
+	export testfor="$1"
+	if [[ -z "$testfor" ]] || [[ "$testfor" == "$NULL" ]]; then
+		echo "true"
+	fi
+	unset testfor
+}
+
+function String.replace() {
+	if [[ $(String.isNull "$1") ]] && [[ $(String.isNull "$2") ]] && [[ $(String.isNull "$3") ]]; then
+		syntaxException "String.replace - Not enough parameters given."
+	fi
+	export buffer="$(echo "$1" | sed "s/$2/$3/g")"
+	if [[ $(String.isNull "$4") ]]; then
+		echo "$buffer"
+		unset buffer
+	else
+		export $4="$buffer"
+		unset buffer
+	fi
+}
+
+function String.length() {
+	if [[ $(String.isNull "$1") ]]; then
+		syntaxException "String.length - Not enough parameters given."
+	fi
+	export buffer1="$1"
+	export buffer2="$(echo ${#buffer1})"
+	if [[ $(String.isNull "$2") ]]; then
+		echo "$buffer2"
+		unset buffer1 buffer2
+	else
+		export $2="$buffer2"
+		unset buffer1 buffer2
+	fi
+}
+
+function String.isEmpty() {
+	if [[ $(String.isNull "$1") ]]; then
+		echo "true"
+	fi
+}
+
+function String.contains() {
+	if [[ $(String.isNull "$1") ]] || [[ $(String.isNull "$2") ]]; then
+		syntaxException "String.contains - Not enough parameters given."
+	fi
+	if [[ ! -z "$(echo "$1" | grep "$2")" ]]; then
+		echo "true"
+	fi
+}
+
+function String.endsWith() {
+	if [[ $(String.isNull "$1") ]] || [[ $(String.isNull "$2") ]]; then
+		syntaxException "String.endsWith - Not enough parameters given."
+	fi
+	if [[ "$1" == *"$2" ]]; then
+		echo "true"
+	fi
+}
+
+function String.startsWith() {
+	if [[ $(String.isNull "$1") ]] || [[ $(String.isNull "$2") ]]; then
+		syntaxException "String.startsWith - Not enough parameters given."
+	fi
+	if [[ "$1" == "$2"* ]]; then
+		echo "true"
+	fi
+}
+
+function String.split() {
+	if [[ $(String.isNull "$1") ]] || [[ $(String.isNull "$2") ]] || [[ $(String.isNull "$3") ]]; then
+		syntaxException "String.split - Not enough parameters given."
+	fi
+	IFS="$2" read -ra $3 <<< "$1"
+}
+
+function String.substring() {
+	if [[ $(String.isNull "$1") ]] || [[ $(String.isNull "$2") ]]; then
+		syntaxException "String.substring - Not enough parameters given."
+	fi
+
+	re='^[0-9]+$'
+	if [[ ! $3 =~ $re ]]; then
+		export buffer="${1:$2:$3}"
+		if [[ $(String.isNull "$4") ]]; then
+			echo "$buffer"
+		else
+			export $4="$buffer"
+		fi
+	else
+		export buffer="${1:$2}"
+		if [[ $(String.isNull "$3") ]]; then
+			echo "$buffer"
+		else
+			export $3="$buffer"
+		fi
+	fi
+
+	unset buffer
+}
+
+function String.random() {
+	# First parameter: Length
+	# Second parameter: regex
+	# Third parameter: Counts
+	# Fourth parameter: Variable name
+
+	# If no length is given (_ or null), use 1
+	# If no regex is given (_ or null), use [a-zA-Z0-9!@#$%^&*()_+]
+	# If no counts is given (_ or null), use 1
+	# If no variable name is given (_ or null), print to stdout
+	
+	if [[ $(String.isNull "$1") ]] || [[ "$1" == "_" ]]; then
+		export length=1
+	else
+		export length="$1"
+	fi
+
+	if [[ $(String.isNull "$2") ]] || [[ "$2" == "_" ]] ; then
+		export regex="a-zA-Z0-9!@#$%^&*()_+[]"
+	else
+		export regex="$2"
+	fi
+
+	if [[ $(String.isNull "$3") ]] || [[ "$3" == "_" ]]; then
+		export counts=1
+	else
+		export counts="$3"
+	fi
+	# If first parameter is not a number, throw an error
+	re='^[0-9]+$'
+	if ! [[ $length =~ $re ]] ; then
+		syntaxException "String.random - First parameter must be a number."
+	fi
+
+	# If third parameter is not a number, throw an error
+	if ! [[ $counts =~ $re ]] ; then
+		syntaxException "String.random - Third parameter must be a number."
+	fi
+	unset re
+
+	export LCBACKUP="$LC_CTYPE"
+	export LC_CTYPE=C
+	export COMMAND="cat /dev/urandom | tr -dc '"$regex"' | fold -w "$length" | head -n "$counts""
+	export buffer="$(eval $COMMAND)"
+	export LC_CTYPE="$LCBACKUP"
+	unset LCBACKUP COMMAND
+	if [[ $(String.isNull "$4") ]]; then
+		echo "$buffer"
+		unset buffer
+	else
+		export $4="$buffer"
+		unset buffer
+	fi
+}
+
+function @string() {
+	if [[ $(String.isNull "$2") ]]; then
+		syntaxException "string - Not enough parameters given."
+	fi
+	export buffer="$(echo "${@:2}" | sed "s/\"//g")"
+	export $1="$buffer"
+	unset buffer
+}
+
+
+
+
+
+
+
+
+

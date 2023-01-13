@@ -1,0 +1,28 @@
+#!/bin/zsh
+@import Foundation/exception
+@import Foundation/string
+
+function Hash.stringToSha() {
+	if [[ $(String.isNull "$1") ]] || [[ $(String.isNull "$2") ]]; then
+		syntaxException "Hash.stringToSha - Parameter is not properly given: Hash.stringToSha [(integer) protocol] [(string) string]"
+	else
+		export parse=($(echo "$2" | shasum -a "$1"))
+		echo "${parse[0]}"
+	fi
+}
+
+function Hash.fileToSha() {
+	if [[ $(String.isNull "$1") ]] || [[ $(String.isNull "$2") ]]; then
+		syntaxException "Hash.fileToSha - Parameter is not properly given: Hash.fileToSha [(integer) protocol] [(string) file path]"
+	else
+		if [[ $(File.isFile "$1") ]]; then
+			export parse=($(shasum -a "$1" "$2"))
+			echo "${parse[0]}"
+		else
+			runtimeException "Hash.fileToSha - No such file"
+		fi
+	fi
+}
+
+
+

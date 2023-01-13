@@ -1,0 +1,81 @@
+#!/bin/zsh
+
+@import Foundation/string
+
+export OSXNOTIFTITLE=""
+export OSXNOTIFMESSAGE=""
+export OSXNOTIFSUBTITLE=""
+export OSXNOTIFSOUND=""
+
+function MacOSNotification.setTitle() {
+	if [[ $(String.isNull "$1") ]]; then
+		export OSXNOTIFTITLE=""
+	else
+		export OSXNOTIFTITLE="$1"
+	fi
+}
+
+function MacOSNotification.setMessage() {
+	if [[ $(String.isNull "$1") ]]; then
+		export OSXNOTIFMESSAGE=""
+	else
+		export OSXNOTIFMESSAGE="$1"
+	fi
+}
+
+function MacOSNotification.setSubtitle() {
+	if [[ $(String.isNull "$1") ]]; then
+		export OSXNOTIFSUBTITLE=""
+	else
+		export OSXNOTIFSUBTITLE="$1"
+	fi
+}
+
+function MacOSNotification.setSoundName() {
+	if [[ $(String.isNull "$1") ]]; then
+		export OSXNOTIFSOUND=""
+	else
+		export OSXNOTIFSOUND="$1"
+	fi
+}
+
+function MacOSNotification.clear() {
+	export OSXNOTIFTITLE=""
+	export OSXNOTIFMESSAGE=""
+	export OSXNOTIFSUBTITLE=""
+	export OSXNOTIFSOUND=""
+}
+
+function MacOSNotification.display() {
+
+	export data="display notification"
+
+	if [[ ! $(String.isNull "$OSXNOTIFMESSAGE") ]]; then
+		data="$data \"$OSXNOTIFMESSAGE\""
+	fi
+
+	if [[ ! $(String.isNull "$OSXNOTIFTITLE") ]]; then
+		export title=" with title \"$OSXNOTIFTITLE\""
+	fi
+
+	if [[ ! $(String.isNull "$OSXNOTIFSUBTITLE") ]]; then
+		export subtitle=" subtitle \"$OSXNOTIFSUBTITLE\""
+	fi
+
+	if [[ ! $(String.isNull "$OSXNOTIFSOUND") ]]; then
+		export sound=" sound name \"$OSXNOTIFSOUND\""
+	fi
+
+	export data="${data}${title}${subtitle}${sound}"
+
+	osascript -e "$data"
+
+	unset data title subtitle sound
+}
+
+
+
+
+
+
+

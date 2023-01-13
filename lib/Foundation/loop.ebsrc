@@ -1,0 +1,3 @@
+#!/bin/zsh
+alias forEachItem='while read item; do'
+alias itemsFrom='done <<<'

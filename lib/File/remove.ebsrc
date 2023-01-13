@@ -1,0 +1,45 @@
+#!/bin/zsh
+@import Foundation/exception
+@import Foundation/string
+@import Foundation/out
+@import File/check
+
+function File.removeFile() {
+	if [[ $(String.isNull "$1") ]]; then
+		syntaxException "File.removeFile - Parameter is not properly given."
+	else
+		if [[ ! $(File.isFile "$1") ]]; then
+			runtimeException "File.removeFile - File does not exist: $1"
+		else
+			rm -f "$1"
+		fi
+	fi
+}
+
+function File.removeDirectory() {
+	if [[ $(String.isNull "$1") ]]; then
+		syntaxException "File.removeDirectory - Parameter is not properly given."
+	else
+		if [[ ! $(File.isDirectory "$1") ]]; then
+			runtimeException "File.removeDirectory - Directory does not exist: $1"
+		else
+			rm -rf "$1"
+		fi
+	fi
+}
+
+function File.remove() {
+	if [[ $(String.isNull "$1") ]]; then
+		syntaxException "File.remove - Parameter is not properly given."
+	else
+		if [[ ! $(File.exists "$1") ]]; then
+			runtimeException "File.remove - Nothing exists: $1"
+			exit
+		else
+			rm -rf "$1"
+		fi
+	fi
+}
+
+
+

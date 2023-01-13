@@ -1,0 +1,166 @@
+#!/bin/zsh
+class String() {
+    @superclass Object
+    
+    global value "$@"
+
+    function toString() {
+        this get value
+    }
+
+    function replace() {
+        this set value "$(echo "$(this get value)" | sed "s/$1/$2/g")"
+    }
+
+    function digestTo() {
+        if [[ -z "$1" ]]; then
+            echo "ZLang (classes/String) Error: Cannot digest to algorithm: none"
+            return
+        fi
+
+        export parse=($(echo "$(this get value)" | shasum -a "$1"))
+        
+        @import Foundation/string
+        buffer=$(String.replace "$parse" " -" "")
+
+        if [[ -z $2 ]]; then
+		    this set value "${buffer}"
+        else
+            export $2="${buffer}"
+        fi
+    }
+
+    function length() {
+        export buffer1="$(this get value)"
+        export buffer2="$(echo ${#buffer1})"
+        if [[ -z "$1" ]]; then
+            echo "$buffer2"
+            unset buffer1 buffer2
+        else
+            export $1="$buffer2"
+            unset buffer1 buffer2
+        fi
+    }
+
+    function contains() {
+        if [[ -z "$1" ]]; then
+            syntaxException "String.contains - Not enough parameters given."
+        fi
+        if [[ ! -z "$(echo "$(this get value)" | grep "$1")" ]]; then
+            if [[ -z "$2" ]]; then
+                echo "true"
+            else
+                export $2="true"
+            fi
+        fi
+    }
+
+    function endsWith() {
+        if [[ -z "$1" ]]; then
+            syntaxException "String.endsWith - Not enough parameters given."
+        fi
+        if [[ "$(this get value)" == *"$1" ]]; then
+            if [[ -z "$2" ]]; then
+                echo "true"
+            else
+                export $2="true"
+            fi
+        fi
+    }
+
+    function startsWith() {
+        if [[ -z "$1" ]]; then
+            syntaxException "String.startsWith - Not enough parameters given."
+        fi
+        if [[ "$(this get value)" == "$1"* ]]; then
+            if [[ -z "$2" ]]; then
+                echo "true"
+            else
+                export $2="true"
+            fi
+        fi
+    }
+
+    function split() {
+        if [[ -z "$1" ]]; then
+            syntaxException "String.split - Not enough parameters given."
+        fi
+        # IFS="$1" read -ra $3 <<< "$1"
+    }
+
+    function substring() {
+        if [[ -z "$1" ]] || [[ -z "$2" ]]; then
+            syntaxException "String.substring - Not enough parameters given."
+        fi
+
+        re='^[0-9]+$'
+        if [[ ! $3 =~ $re ]]; then
+            export buffer="${1:$2:$3}"
+            if [[ -z "$4" ]]; then
+                echo "$buffer"
+            else
+                export $4="$buffer"
+            fi
+        else
+            export buffer="${1:$2}"
+            if [[ -z "$3" ]]; then
+                echo "$buffer"
+            else
+                export $3="$buffer"
+            fi
+        fi
+
+        unset buffer
+    }
+
+    function random() {
+        # First parameter: Length
+        # Second parameter: regex
+        # Third parameter: Counts
+
+        # If no length is given (_ or null), use 1
+        # If no regex is given (_ or null), use [a-zA-Z0-9!@#$%^&*()_+]
+        # If no counts is given (_ or null), use 1
+        
+        if [[ -z "$1" ]] || [[ "$1" == "$NULL" ]] || [[ "$1" == "_" ]]; then
+            export length=1
+        else
+            export length="$1"
+        fi
+
+        if [[ -z "$2" ]] || [[ "$2" == "$NULL" ]] || [[ "$2" == "_" ]] ; then
+            export regex="a-zA-Z0-9!@#$%^&*()_+[]"
+        else
+            export regex="$2"
+        fi
+
+        if [[ -z "$3" ]] || [[ "$3" == "$NULL" ]] || [[ "$3" == "_" ]]; then
+            export counts=1
+        else
+            export counts="$3"
+        fi
+        # If first parameter is not a number, throw an error
+        re='^[0-9]+$'
+        if ! [[ $length =~ $re ]] ; then
+            syntaxException "String.random - First parameter must be a number."
+        fi
+
+        # If third parameter is not a number, throw an error
+        if ! [[ $counts =~ $re ]] ; then
+            syntaxException "String.random - Third parameter must be a number."
+        fi
+        unset re
+
+        export LCBACKUP="$LC_CTYPE"
+        export LC_CTYPE=C
+        export COMMAND="cat /dev/urandom | tr -dc '"$regex"' | fold -w "$length" | head -n "$counts""
+        export buffer="$(eval $COMMAND)"
+        export LC_CTYPE="$LCBACKUP"
+        unset LCBACKUP COMMAND
+        this set value "$buffer"
+        unset buffer
+    }
+
+
+    execute "$@"
+}

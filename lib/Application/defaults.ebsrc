@@ -1,0 +1,44 @@
+#!/bin/zsh
+@import Foundation/exception
+@import Foundation/string
+@import File
+
+function Application.setData() {
+	if [[ $(String.isNull "$APPLICATION_CONTEXT") ]]; then
+		syntaxException "Application.setData - Context not given."
+	else
+		if [[ $(String.isNull "$1") ]] || [[ $(String.isNull "$2") ]]; then
+			syntaxException "Application.setData - Either key or / and value is not given."
+		else
+			File.createDirectory ~/Library/Application\ Support/"$APPLICATION_CONTEXT"/defaults
+			if [[ $(File.exists ~/Library/Application\ Support/"$APPLICATION_CONTEXT"/defaults/"$(md5 -qs "$1")") ]]; then
+				File.remove ~/Library/Application\ Support/"$APPLICATION_CONTEXT"/defaults/"$(md5 -qs "$1")"
+			fi
+			File.createFile ~/Library/Application\ Support/"$APPLICATION_CONTEXT"/defaults/"$(md5 -qs "$1")" "$2"
+		fi
+	fi
+}
+
+function Application.getData() {
+	if [[ $(String.isNull "$APPLICATION_CONTEXT") ]]; then
+		syntaxException "Application.setData - Context not given."
+	else
+		if [[ $(String.isNull "$1") ]]; then
+			syntaxException "Application.getData - Key is not given."
+		else
+			if [[ $(File.isFile ~/Library/Application\ Support/"$APPLICATION_CONTEXT"/defaults/"$(md5 -qs "$1")") ]]; then
+				result="$(File.read ~/Library/Application\ Support/"$APPLICATION_CONTEXT"/defaults/"$(md5 -qs "$1")")"
+				if [[ -z $2 ]]; then
+					echo "$result"
+				else
+					export $2="$result"
+				fi
+				unset result
+			else
+				runtimeException "Application.getData - Key does not exist."
+			fi
+		fi
+	fi
+}
+
+

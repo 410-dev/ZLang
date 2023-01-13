@@ -1,0 +1,12 @@
+#!/bin/zsh
+@import Foundation/exception
+@import Foundation/string
+
+function Application.setApplicationName() {
+	if [[ $(String.isNull "$1") ]]; then
+		syntaxException "Application.setApplicationName"
+	else
+		export APPLICATION_CONTEXT="$1"
+	fi
+}
+

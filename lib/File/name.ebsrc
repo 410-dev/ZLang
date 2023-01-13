@@ -1,0 +1,65 @@
+#!/bin/zsh
+@import Foundation/exception
+@import Foundation/string
+
+function File.getFileName() {
+	if [[ $(String.isNull "$1") ]]; then
+		syntaxException "File.getFileName - Parameter not properly given."
+	else
+		buffer="$(basename -- "$1")"
+		if [[ ! $(String.isNull "$2") ]]; then
+			export $2="$buffer"
+		else
+			echo "$buffer"
+		fi
+		unset buffer
+	fi
+}
+
+function File.getName() {
+	if [[ $(String.isNull "$1") ]]; then
+		syntaxException "File.getName - Parameter not properly given."
+	else
+		filename="$(File.getFileName "$1")"
+		buffer="${filename%.*}"
+		if [[ ! $(String.isNull "$2") ]]; then
+			export $2="$buffer"
+		else
+			echo "$buffer"
+		fi
+		unset filename buffer
+	fi
+}
+
+function File.getExtension() {
+	if [[ $(String.isNull "$1") ]]; then
+		syntaxException "File.getExtension - Parameter not properly given."
+	else
+		filename="$(File.getFileName "$1")"
+		buffer="${filename##*.}"
+		if [[ ! $(String.isNull "$2") ]]; then
+			export $2="$buffer"
+		else
+			echo "$buffer"
+		fi
+		unset filename buffer
+	fi	
+}
+
+function File.getDirectoryOf()  {
+	if [[ $(String.isNull "$1") ]]; then
+		syntaxException "File.getDirectoryOf - Parameter not properly given."
+	else
+		buffer="$(dirname "$1")"
+		if [[ ! $(String.isNull "$2") ]]; then
+			export $2="$buffer"
+		else
+			echo "$buffer"
+		fi
+		unset buffer
+	fi
+}
+
+
+
+
