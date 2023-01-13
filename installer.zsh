@@ -1,10 +1,6 @@
 #!/bin/zsh
 
-# Check if zlang is already installed
-if [[ -f "/private/etc/paths.d/zlang" ]] && [[ -z "$1" ]]; then
-	echo "zlang is already installed. Add version parameter to override this error."
-	exit 8
-fi
+export ROOT="$HOME/.local/zlang"
 
 # Actual localizing
 export GIT_LATEST_URL="https://raw.githubusercontent.com/410-dev/ZLang/main/latest";
@@ -26,7 +22,7 @@ if [[ "$runtimeVersionRequest" == "latest" ]]; then
 fi
 
 echo "Downloading runtime: $runtimeVersionRequest"
-sudo curl -L --progress-bar "${GIT_RELEASE_URL}/${runtimeVersionRequest}/ZLang-${runtimeVersionRequest}.zip" -o "/tmp/zlang.zip"
+curl -L --progress-bar "${GIT_RELEASE_URL}/${runtimeVersionRequest}/ZLang-${runtimeVersionRequest}.zip" -o "/tmp/zlang.zip"
 if [[ ! $? == 0 ]]; then
 	echo "Failed downloading runtime."
 	unset GIT_LATEST_URL GIT_RELEASE_URL runtimeVersionRequest	
@@ -38,42 +34,55 @@ if [[ -z "$(file "/tmp/zlang.zip" | grep "Zip archive data")" ]]; then
 	exit 5
 fi
 
-export ROOT="/usr/local/zlang"
 if [[ -z "$2" ]]; then
-	export INSTALLDIR="${ROOT}/${runtimeVersionRequest}/"
-	echo "To save, the tool needs superuser permission."
-	sudo echo -n ""
-	if [[ $? == 0 ]]; then
-		echo "Granted."
-	else
-		echo "Failed granting superuser permission."
-		unset GIT_LATEST_URL GIT_RELEASE_URL runtimeVersionRequest INSTALLDIR
-		exit 7
+
+	# Check if user is root
+	if [[ "$USER" == "root" ]]; then
+		export ROOT="/usr/local/zlang"
+		echo -e "\033[93mWarning: Running as root! This is not recommended. ZLang runtime will be installed at $ROOT.\033[39m"
 	fi
+
+	export INSTALLDIR="${ROOT}/${runtimeVersionRequest}/"
 else
 	export INSTALLDIR="$2"
 fi
 
+# Check if directory exists
+if [[ -d "$INSTALLDIR" ]]; then
+	echo "Removing old version..."
+	rm -rf "$INSTALLDIR" 2> /dev/null
+	if [[ ! $? == 0 ]]; then
+		echo "Failed removing old version. Retrying with sudo..."
+		sudo rm -rf "$INSTALLDIR" 2> /dev/null
+		if [[ ! $? == 0 ]]; then
+			echo "Failed removing old version."
+			unset GIT_LATEST_URL GIT_RELEASE_URL runtimeVersionRequest INSTALLDIR
+			exit 3
+		fi
+	fi
+fi
+
 echo "Unpacking..."
-sudo mkdir -p "$INSTALLDIR"
-sudo unzip -qo "/tmp/zlang.zip" -d "$INSTALLDIR"
+mkdir -p "$INSTALLDIR"
+unzip -qo "/tmp/zlang.zip" -d "$INSTALLDIR"
 if [[ ! $? == 0 ]]; then
 	echo "Failed unpacking."
 	unset GIT_LATEST_URL GIT_RELEASE_URL runtimeVersionRequest INSTALLDIR
 	exit 4
 fi
-sudo rm -rf "$INSTALLDIR/__MACOSX"
+rm -rf "$INSTALLDIR/__MACOSX"
 
 # If it is not localizing runtime
 if [[ -z "$2" ]]; then
 	# Add to zshrc
 
 	if [[ -e "$ROOT/selected" ]]; then
-		echo "Removing old selected version..."
-		sudo rm -f "$ROOT/selected"
+		echo "Removing old symbolic link..."
+		rm -f "$ROOT/selected"
 	fi
-	echo "Creating symbolic link for selection..."
-	sudo ln -s "$INSTALLDIR" "$ROOT/selected"
+
+	echo "Creating new symbolic link..."
+	ln -s "$INSTALLDIR" "$ROOT/selected"
 
 	echo "Adding zlang loader to zshrc..."
 	if [[ -z "$(cat ~/.zshrc | grep "ZLANG_HOME=")" ]]; then
@@ -84,23 +93,32 @@ if [[ -z "$2" ]]; then
 
 	# Add to Path
 	echo "Adding zlang-linker to path..."
-	sudo chmod +x "$INSTALLDIR"/zlang-linker
-	sudo chmod +x "$INSTALLDIR"/uninstall-zlang
-	sudo rm -rf "$INSTALLDIR/bin"
-	sudo mkdir -p "$INSTALLDIR/bin"
-	sudo ln -s "$INSTALLDIR/zlang-linker" "$INSTALLDIR/bin/zlang-linker"
-	sudo ln -s "$INSTALLDIR/uninstall-zlang" "$INSTALLDIR/bin/uninstall-zlang"
-	echo "$INSTALLDIR/bin" | sudo tee -a "/private/etc/paths.d/zlang" > /dev/null
+	chmod +x "$INSTALLDIR"/zlang-linker
+	chmod +x "$INSTALLDIR"/uninstall-zlang
+	rm -rf "$INSTALLDIR/bin"
+	mkdir -p "$INSTALLDIR/bin"
+	ln -s "$INSTALLDIR/zlang-linker" "$INSTALLDIR/bin/zlang-linker"
+	ln -s "$INSTALLDIR/uninstall-zlang" "$INSTALLDIR/bin/uninstall-zlang"
+	if [[ "$USER" == "root" ]]; then
+		echo "$INSTALLDIR/bin" > "/private/etc/paths.d/zlang"
+		echo -e "\033[93mWarning: Running as root! This is not recommended. Path is set by creating /etc/paths.d/zlang.\033[39m"
+	else
+		echo "Exporting path to $HOME/.zshrc..."
+		echo "export PATH=\"$INSTALLDIR/bin:\$PATH\"" >> "$HOME/.zshrc"
+	fi
 
 	# Generate receipt
 	echo "Generating receipt..."
-	echo "/private/etc/paths.d/zlang" | sudo tee -a "$INSTALLDIR/receipt" >/dev/null
-	echo "$INSTALLDIR" | sudo tee -a "$INSTALLDIR/receipt" > /dev/null
+	if [[ "$USER" == "root" ]]; then
+		echo "/private/etc/paths.d/zlang" > "$INSTALLDIR/receipt"
+		echo -e "\033[93mWarning: Running as root! This is not recommended. Path setter at /etc/paths.d/zlang is added to removal receipt.\033[39m"
+	fi
+	echo "$INSTALLDIR" >> "$INSTALLDIR/receipt"
 fi
 
 echo "Cleaning up..."
-sudo chown -R "$(echo $(whoami))" "$INSTALLDIR"
-sudo rm -rf "/tmp/zlang.zip"
+chown -R "$(echo $(whoami))" "$INSTALLDIR"
+rm -rf "/tmp/zlang.zip"
 
 unset GIT_LATEST_URL GIT_RELEASE_URL runtimeVersionRequest INSTALLDIR
 echo "Done!"
