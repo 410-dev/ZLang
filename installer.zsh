@@ -93,18 +93,24 @@ if [[ -z "$2" ]]; then
 
 	# Add to Path
 	echo "Adding zlang-linker to path..."
-	chmod +x "$INSTALLDIR"/zlang-linker
-	chmod +x "$INSTALLDIR"/uninstall-zlang
-	rm -rf "$INSTALLDIR/bin"
-	mkdir -p "$INSTALLDIR/bin"
+	chmod +x "$INSTALLDIR"/bin/zlang-linker
+	chmod +x "$INSTALLDIR"/bin/uninstall-zlang
+	# chmod +x "$INSTALLDIR"/zlang-linker
+	# chmod +x "$INSTALLDIR"/uninstall-zlang
+	# rm -rf "$INSTALLDIR/bin"
+	# mkdir -p "$INSTALLDIR/bin"
 	ln -s "$INSTALLDIR/zlang-linker" "$INSTALLDIR/bin/zlang-linker"
-	ln -s "$INSTALLDIR/uninstall-zlang" "$INSTALLDIR/bin/uninstall-zlang"
+	# ln -s "$INSTALLDIR/uninstall-zlang" "$INSTALLDIR/bin/uninstall-zlang"
 	if [[ "$USER" == "root" ]]; then
-		echo "$INSTALLDIR/bin" > "/private/etc/paths.d/zlang"
+		echo "$ROOT/selected/bin" > "/private/etc/paths.d/zlang"
 		echo -e "\033[93mWarning: Running as root! This is not recommended. Path is set by creating /etc/paths.d/zlang.\033[39m"
 	else
 		echo "Exporting path to $HOME/.zshrc..."
-		echo "export PATH=\"$INSTALLDIR/bin:\$PATH\"" >> "$HOME/.zshrc"
+		if [[ -z "$(echo "$(cat "$HOME/.zshrc" | grep "export PATH=")" | grep "/selected/bin")" ]]; then
+			echo "export PATH=\"$ROOT/selected/bin:\$PATH\"" >> "$HOME/.zshrc"
+		else
+			echo "Path is already set."
+		fi
 	fi
 
 	# Generate receipt
