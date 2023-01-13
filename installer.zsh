@@ -82,7 +82,7 @@ if [[ -z "$2" ]]; then
 	fi
 
 	echo "Creating new symbolic link..."
-	ln -s "$INSTALLDIR" "$ROOT/selected"
+	ln -sf "$INSTALLDIR" "$ROOT/selected"
 
 	echo "Adding zlang loader to zshrc..."
 	if [[ -z "$(cat ~/.zshrc | grep "ZLANG_HOME=")" ]]; then
@@ -93,13 +93,12 @@ if [[ -z "$2" ]]; then
 
 	# Add to Path
 	echo "Adding zlang-linker to path..."
-	chmod +x "$INSTALLDIR"/bin/zlang-linker
-	chmod +x "$INSTALLDIR"/bin/uninstall-zlang
-	# chmod +x "$INSTALLDIR"/zlang-linker
-	# chmod +x "$INSTALLDIR"/uninstall-zlang
+	ln -s "$INSTALLDIR/zlang-linker" "$INSTALLDIR/bin/zlang-linker"
+	chmod +x "$INSTALLDIR"bin/zlang-linker
+	chmod +x "$INSTALLDIR"bin/zlang-uninstall
+	chmod +x "$INSTALLDIR"bin/zlang-select
 	# rm -rf "$INSTALLDIR/bin"
 	# mkdir -p "$INSTALLDIR/bin"
-	ln -s "$INSTALLDIR/zlang-linker" "$INSTALLDIR/bin/zlang-linker"
 	# ln -s "$INSTALLDIR/uninstall-zlang" "$INSTALLDIR/bin/uninstall-zlang"
 	if [[ "$USER" == "root" ]]; then
 		echo "$ROOT/selected/bin" > "/private/etc/paths.d/zlang"
