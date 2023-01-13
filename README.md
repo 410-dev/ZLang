@@ -15,6 +15,7 @@ curl -Ls https://raw.githubusercontent.com/410-dev/ZLang/main/installer.zsh | zs
 
 If you are writing a script, you MUST prepend this code to the script file in order to fully load ZLang library.
 ```bash
+#!/bin/zsh
 source $ZLANG_HOME/zlang-linker $ZLANG_HOME
 ```
 
