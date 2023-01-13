@@ -72,7 +72,7 @@ if [[ -z "$2" ]]; then
 		echo "Removing old selected version..."
 		sudo rm -f "$ROOT/selected"
 	fi
-	echo "Creating new selected version..."
+	echo "Creating symbolic link for selection..."
 	sudo ln -s "$INSTALLDIR" "$ROOT/selected"
 
 	echo "Adding zlang loader to zshrc..."
