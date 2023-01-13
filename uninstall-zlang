@@ -9,6 +9,6 @@ do
 		exit 9
 	fi
 done <<< "$(cat "$ZLANG_HOME/receipt")"
-echo "eBash2 is Uninstalled."
-echo "Please remove eBash2 related codes from ~/.bashrc as well."
+echo "ZLang is Uninstalled."
+echo "Please remove ZLang related codes from ~/.zshrc as well."
 exit 0
