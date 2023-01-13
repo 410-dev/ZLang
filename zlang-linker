@@ -1,10 +1,5 @@
 #!/bin/zsh
 
-# Check if running in zsh
-if [[ -z "$(echo "$0" | grep "zsh")" ]]; then
-	echo "Warning: Seems you're not in zsh environment."
-fi
-
 # Will return to parent working directory
 export ORIGH="$(pwd)"
 
