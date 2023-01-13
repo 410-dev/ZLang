@@ -1,0 +1,14 @@
+#!/bin/zsh
+
+# Marking that this file is intended to be translated, not executed.
+# This should conflict with "source $ZLANG_HOME/zlang-linker $ZLANG_HOME" command.
+function @translate(){
+    echo "This script is intended to be translated, not executed."
+    exit 9
+}
+
+
+# Marking the required runtime version so that the translator can use the correct version.
+# This is required if @translate is used.
+# If not used, the translator will use the selected version.
+alias @require=":"
