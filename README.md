@@ -10,7 +10,7 @@ ZLang is a successor of eBash2 with greater compatibility and extended features.
 
 #### Installation
 ```bash 
-curl -Ls 
+curl -Ls https://raw.githubusercontent.com/410-dev/ZLang/main/installer.zsh | zsh
 ```
 
 If you are writing a script, you MUST prepend this code to the script file in order to fully load ZLang library.
@@ -24,10 +24,7 @@ source $ZLANG_HOME/zlang-linker $ZLANG_HOME
 
 #### Native Translator (WIP)
 
-Since the mechanism of eBash2 runtime is not as efficient as the native bash script, an eBash2 to native bash translator using Java is currently under development.
-It dramatically increases the script size for sure, but is uncertain about the performance.
-
-[Check it out from here.](https://github.com/410-dev/eBash2-translator)
+Since the mechanism of ZLang runtime is not as efficient as the native zsh script, an ZLang to native bash translator using Java is currently under development.
 
 <br>
 
