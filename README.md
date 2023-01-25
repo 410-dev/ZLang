@@ -23,7 +23,7 @@ source $ZLANG_HOME/zlang-linker $ZLANG_HOME
 
 ### Native Translator (WIP)
 
-Since the mechanism of ZLang runtime is not as efficient as the native zsh script, an ZLang to native bash translator using Java is currently under development.
+ZLang script requires library to fully function. However, if developers use [ZLang2Native](https://github.com/410-dev/ZLang2Native), then the ZLang script will be able to be run on machines that do not have ZLang library installed.
 
 <br>
 
