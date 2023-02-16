@@ -13,6 +13,7 @@ if [[ -z "$VERSION" ]]; then
             echo "  $line"
         fi
     done <<< "$(ls -1 $ZLANG_HOME/../ | sort -r)"
+    exit 0
 fi
 
 # If the version is not installed, exit
@@ -28,9 +29,11 @@ if [[ "$VERSION" == "$EBVERSION" ]]; then
 fi
 
 # Change the symlink
-rm -f "$ZLANG_HOME/../selected"
-ln -s "$ZLANG_HOME/../$VERSION" "$ZLANG_HOME/../selected"
+ORIGPATH="$(pwd)"
+cd "$ZLANG_HOME/../"
+unlink "selected"
+ln -sf "./$VERSION" "./selected"
 
 # Try reading the version using the new symlink
 source "$ZLANG_HOME/../selected/base/version.zlangbase"
-echo "ZLang version $EBVERSION is selected."
+echo "ZLang version $EBVERSION is selected. Make sure to reload your zshrc."
