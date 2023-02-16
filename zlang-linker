@@ -41,6 +41,6 @@ fi
 
 unset ORIGH 2>/dev/null
 
-if [[ "$EBASH_PREP_PRINT" == "1" ]]; then
-	echo "eBash environment preparation successful."
+if [[ "$ZLANG_PREP_PRINT" == "1" ]]; then
+	echo "ZLang environment preparation successful."
 fi
