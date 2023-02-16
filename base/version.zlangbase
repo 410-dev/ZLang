@@ -1,8 +1,8 @@
 #!/bin/zsh
-export EBVERSION="1.1.1alpha"
+export EBVERSION="1.1.2alpha"
 export EBVERSION_MAJOR=1
 export EBVERSION_MINOR=1
-export EBVERSION_REVISION=1
+export EBVERSION_REVISION=2
 export EBVERSION_EDITION="alpha"
 
 function @version() {
