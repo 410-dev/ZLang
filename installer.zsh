@@ -14,6 +14,7 @@ else
 	export runtimeVersionRequest="$1"
 fi
 
+echo "ZLang Installer Feb2023A"
 echo "Requested Runtime: $runtimeVersionRequest"
 
 if [[ "$runtimeVersionRequest" == "latest" ]]; then
