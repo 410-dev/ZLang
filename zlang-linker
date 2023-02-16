@@ -1,5 +1,10 @@
 #!/bin/zsh
 
+# Check ZSH version
+if [[ -z "$ZSH_VERSION" ]]; then
+	echo "Warning: ZLang is intended to run in zsh environment."
+fi
+
 # Will return to parent working directory
 export ORIGH="$(pwd)"
 
