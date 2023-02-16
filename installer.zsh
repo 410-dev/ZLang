@@ -4,7 +4,7 @@ export ROOT="$HOME/.local/zlang"
 
 # Actual localizing
 export GIT_LATEST_URL="https://raw.githubusercontent.com/410-dev/ZLang/main/latest";
-export GIT_RELEASE_URL="https://github.com/410-dev/ZLang/releases/download/";
+export GIT_RELEASE_URL="https://codeload.github.com/410-dev/ZLang/zip/refs/tags";
 
 echo "Preparing zlang environment..."
 
@@ -22,10 +22,10 @@ if [[ "$runtimeVersionRequest" == "latest" ]]; then
 fi
 
 echo "Downloading runtime: $runtimeVersionRequest"
-curl -L --progress-bar "${GIT_RELEASE_URL}/${runtimeVersionRequest}/ZLang-${runtimeVersionRequest}.zip" -o "/tmp/zlang.zip"
+curl -L --progress-bar "${GIT_RELEASE_URL}/${runtimeVersionRequest}" -o "/tmp/zlang.zip"
 if [[ ! $? == 0 ]]; then
 	echo "Failed downloading runtime."
-	unset GIT_LATEST_URL GIT_RELEASE_URL runtimeVersionRequest	
+	unset GIT_LATEST_URL GIT_RELEASE_URL runtimeVersionRequest
 	exit 6
 fi
 
@@ -71,6 +71,8 @@ if [[ ! $? == 0 ]]; then
 	exit 4
 fi
 rm -rf "$INSTALLDIR/__MACOSX"
+rm -rf "$INSTALLDIR/.gitignore"
+rm -rf "$INSTALLDIR/.gitattributes"
 
 # If it is not localizing runtime
 if [[ -z "$2" ]]; then
