@@ -36,4 +36,4 @@ ln -sf "./$VERSION" "./selected"
 
 # Try reading the version using the new symlink
 source "$ZLANG_HOME/../selected/base/version.zlangbase"
-echo "ZLang version $EBVERSION is selected. Make sure to reload your zshrc."
+echo "ZLang version $EBVERSION is selected. Make sure to execute 'zshrc' command to reload .zshrc file."
