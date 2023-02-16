@@ -14,7 +14,7 @@ else
 	export runtimeVersionRequest="$1"
 fi
 
-echo "ZLang Installer Feb2023B"
+echo "ZLang Installer Feb2023C"
 echo "Requested Runtime: $runtimeVersionRequest"
 
 if [[ "$runtimeVersionRequest" == "latest" ]]; then
@@ -101,6 +101,7 @@ if [[ -z "$2" ]]; then
 		echo "# Load zlang" >> ~/.zshrc
 		echo "export ZLANG_HOME=\"$ROOT/selected\"" >> ~/.zshrc
 		echo "if [[ -f "\"$ROOT/selected/zlang-linker\"" ]]; then source "$ROOT"/selected/zlang-linker; fi" >> ~/.zshrc
+		echo "alias zshrc=\"source ~/.zshrc\"" >> ~/.zshrc
 	fi
 
 	# Add to Path
