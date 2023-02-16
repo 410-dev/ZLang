@@ -14,7 +14,7 @@ else
 	export runtimeVersionRequest="$1"
 fi
 
-echo "ZLang Installer Feb2023A"
+echo "ZLang Installer Feb2023B"
 echo "Requested Runtime: $runtimeVersionRequest"
 
 if [[ "$runtimeVersionRequest" == "latest" ]]; then
@@ -74,6 +74,15 @@ fi
 rm -rf "$INSTALLDIR/__MACOSX"
 rm -rf "$INSTALLDIR/.gitignore"
 rm -rf "$INSTALLDIR/.gitattributes"
+
+echo "Moving decompressed packages..."
+mv -f "$INSTALLDIR/ZLang-$runtimeVersionRequest"/* "$INSTALLDIR"
+if [[ ! $? == 0 ]]; then
+	echo "Failed moving decompressed packages."
+	unset GIT_LATEST_URL GIT_RELEASE_URL runtimeVersionRequest INSTALLDIR
+	exit 4
+fi
+rm -rf "$INSTALLDIR/ZLang-$runtimeVersionRequest"
 
 # If it is not localizing runtime
 if [[ -z "$2" ]]; then
