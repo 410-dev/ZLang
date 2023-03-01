@@ -1,8 +1,8 @@
 #!/bin/zsh
-export EBVERSION="2023MarA-preliminary"
+export EBVERSION="2023MarB-preliminary"
 export EBVERSION_MAJOR=2023
 export EBVERSION_MINOR="Mar"
-export EBVERSION_REVISION="A"
+export EBVERSION_REVISION="B"
 export EBVERSION_EDITION="preliminary"
 
 function @version() {
