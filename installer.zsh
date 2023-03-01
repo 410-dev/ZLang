@@ -14,7 +14,9 @@ else
 	export runtimeVersionRequest="$1"
 fi
 
-echo "ZLang Installer Feb2023C"
+MERGEDARGS="$(echo "$@")"
+
+echo "ZLang Installer Mar2023A"
 echo "Requested Runtime: $runtimeVersionRequest"
 
 if [[ "$runtimeVersionRequest" == "latest" ]]; then
@@ -35,7 +37,7 @@ if [[ -z "$(file "/tmp/zlang.zip" | grep "Zip archive data")" ]]; then
 	exit 5
 fi
 
-if [[ -z "$2" ]]; then
+if [[ -z "$2" ]] || [[ "$2" == "default" ]]; then
 
 	# Check if user is root
 	if [[ "$USER" == "root" ]]; then
@@ -85,7 +87,7 @@ fi
 rm -rf "$INSTALLDIR/ZLang-$runtimeVersionRequest"
 
 # If it is not localizing runtime
-if [[ -z "$2" ]]; then
+if [[ -z "$2" ]] || [[ "$2" == "default" ]] ; then
 	# Add to zshrc
 
 	if [[ -e "$ROOT/selected" ]]; then
@@ -104,15 +106,32 @@ if [[ -z "$2" ]]; then
 		echo "alias zshrc=\"source ~/.zshrc\"" >> ~/.zshrc
 	fi
 
+	if  [[ "$3" == "--bash" ]]; then
+		echo "Adding zlang loader to bashrc..."
+		if [[ ! -f ~/.bashrc ]] || [[ -z "$(cat ~/.bashrc | grep "ZLANG_HOME=")" ]]; then
+			echo "# Load zlang" >> ~/.bashrc
+			echo "export ZLANG_HOME=\"$ROOT/selected\"" >> ~/.bashrc
+			echo "if [[ -f "\"$ROOT/selected/zlang-linker\"" ]]; then source "$ROOT"/selected/zlang-linker; fi" >> ~/.bashrc
+			echo "alias bashrc=\"source ~/.bashrc\"" >> ~/.bashrc
+		fi
+
+		if  [[ "$4" == "--profile" ]]; then
+			echo "Adding zlang loader to bash_profile..."
+			if [[ ! -f ~/.bash_profile ]] || [[ -z "$(cat ~/.bash_profile | grep "ZLANG_HOME=")" ]]; then
+				echo "# Load zlang" >> ~/.bash_profile
+				echo "export ZLANG_HOME=\"$ROOT/selected\"" >> ~/.bash_profile
+				echo "if [[ -f "\"$ROOT/selected/zlang-linker\"" ]]; then source "$ROOT"/selected/zlang-linker; fi" >> ~/.bash_profile
+				echo "alias bash_profile=\"source ~/.bash_profile\"" >> ~/.bash_profile
+			fi
+		fi
+	fi
+
 	# Add to Path
 	echo "Adding zlang-linker to path..."
 	ln -s "$INSTALLDIR/zlang-linker" "$INSTALLDIR/bin/zlang-linker"
 	chmod +x "$INSTALLDIR"bin/zlang-linker
 	chmod +x "$INSTALLDIR"bin/zlang-uninstall
 	chmod +x "$INSTALLDIR"bin/zlang-select
-	# rm -rf "$INSTALLDIR/bin"
-	# mkdir -p "$INSTALLDIR/bin"
-	# ln -s "$INSTALLDIR/uninstall-zlang" "$INSTALLDIR/bin/uninstall-zlang"
 	if [[ "$USER" == "root" ]]; then
 		echo "$ROOT/selected/bin" > "/private/etc/paths.d/zlang"
 		echo -e "\033[93mWarning: Running as root! This is not recommended. Path is set by creating /etc/paths.d/zlang.\033[39m"
@@ -138,5 +157,5 @@ echo "Cleaning up..."
 chown -R "$(echo $(whoami))" "$INSTALLDIR"
 rm -rf "/tmp/zlang.zip"
 
-unset GIT_LATEST_URL GIT_RELEASE_URL runtimeVersionRequest INSTALLDIR
+unset GIT_LATEST_URL GIT_RELEASE_URL runtimeVersionRequest INSTALLDIR MERGEDARGS
 echo "Done!"
