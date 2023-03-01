@@ -8,9 +8,32 @@ ZLang is a successor of eBash2 with greater compatibility and extended features.
 
 ### Installation
 
+Default installation: (Default location, latest)
+
 ```bash 
 curl -Ls https://raw.githubusercontent.com/410-dev/ZLang/main/installer.zsh | zsh
 ```
+
+
+Installer with options
+```shell
+curl -Ls https://raw.githubusercontent.com/410-dev/ZLang/main/installer.zsh -o ./installer.sh
+chmod +x ./installer.sh
+./installer.sh <version> <location> [--bash] [--profile]
+rm -rf ./installer.sh
+```
+
+Modify the options in line 3 to change installation.
+
+Options:
+
+--bash: Add link to .bashrc. Useful if using bash on linux.
+
+--profile: Add link to .bash_profile. Useful if using bash on macOS. Requires --bash option.
+
+
+
+
 
 If you are writing a script, you MUST prepend this code to the script file in order to fully load ZLang library.
 
