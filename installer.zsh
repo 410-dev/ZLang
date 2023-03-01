@@ -16,8 +16,29 @@ fi
 
 MERGEDARGS="$(echo "$@")"
 
-echo "ZLang Installer Mar2023A"
+echo "ZLang Installer Mar2023B"
 echo "Requested Runtime: $runtimeVersionRequest"
+
+if [[ -z "$(which curl)" ]]; then
+	echo "Error: curl is not installed."
+	if [[ ! -z "$(which apt-get)" ]]; then
+		echo "Trying to install curl using apt-get..."
+		sudo apt-get install curl -y
+	elif [[ ! -z "$(which pacman)" ]]; then
+		echo "Trying to install curl using pacman..."
+		sudo pacman -S curl
+	elif [[ ! -z "$(which dnf)" ]]; then
+		echo "Trying to install curl using dnf..."
+		sudo dnf install curl
+	elif [[ ! -z "$(which yum)" ]]; then
+		echo "Trying to install curl using yum..."
+		sudo yum install curl
+	else
+		echo "Error: Failed to install curl. Please install curl manually."
+		exit 1
+	fi
+	exit 1
+fi
 
 if [[ "$runtimeVersionRequest" == "latest" ]]; then
 	echo "Downloading latest version data..."
