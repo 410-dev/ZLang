@@ -1,9 +1,9 @@
 #!/bin/zsh
-export EBVERSION="1.1.2alpha"
-export EBVERSION_MAJOR=1
-export EBVERSION_MINOR=1
-export EBVERSION_REVISION=2
-export EBVERSION_EDITION="alpha"
+export EBVERSION="2023MarA-preliminary"
+export EBVERSION_MAJOR=2023
+export EBVERSION_MINOR="Mar"
+export EBVERSION_REVISION="A"
+export EBVERSION_EDITION="preliminary"
 
 function @version() {
 	echo "ZLang Version - $EBVERSION"
@@ -13,4 +13,3 @@ function @version() {
 declare -i EBVERSION_MAJOR
 declare -i EBVERSION_MINOR
 declare -i EBVERSION_REVISION
-
