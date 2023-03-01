@@ -1,0 +1,36 @@
+#!/bin/zsh
+
+# Check if java runtime is insatlled
+if [[ -z "$(which java)" ]]; then
+    echo "Java runtime is not installed. Please install Java runtime first."
+    exit 1
+fi
+
+# Check if java version is 19 or higher
+JAVAVER="$(java -version 2>&1 | grep "version" | awk '{print $3}' | sed 's/"//g' | awk -F. '{print $1}')"
+if [[ "$JAVAVER" -lt "19" ]] && [[ -z "$NEGLECT_" ]]; then
+    echo "Java runtime version is too low. Please install Java runtime 18 or higher."
+    exit 2
+fi
+unset JAVAVER
+
+# Check if zlang compiler is installed
+if [[ ! -f "$ZLANG_HOME/bin/builder.jar" ]]; then
+    echo -n "ZLang compiler is not installed. Would you install? [y/N]: "
+    read yn
+    if [[ "$yn" == "y" ]] || [[ "$yn" == "Y" ]]; then
+        echo "Downloading ZLang compiler 1.0.1..."
+        mkdir -p "$ZLANG_HOME/bin"
+        curl -L "https://github.com/410-dev/ZLang2Native/releases/download/1.0.1/ZLang2Native-1.0.1.jar" -o "$ZLANG_HOME/bin/builder.jar"
+        if [[ ! $? == 0 ]]; then
+            echo "Failed downloading ZLang compiler."
+            exit 3
+        fi
+    else
+        echo "ZLang compiler is not installed. Please install ZLang compiler first."
+        exit 3
+    fi
+fi
+
+
+java -jar "$ZLANG_HOME/bin/builder.jar" "$@"

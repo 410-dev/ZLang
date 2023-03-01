@@ -153,6 +153,8 @@ if [[ -z "$2" ]] || [[ "$2" == "default" ]] ; then
 	chmod +x "$INSTALLDIR"bin/zlang-linker
 	chmod +x "$INSTALLDIR"bin/zlang-uninstall
 	chmod +x "$INSTALLDIR"bin/zlang-select
+	chmod +x "$INSTALLDIR"bin/zlang-build
+	ln -s "$INSTALLDIR"bin/zlang-build "$INSTALLDIR"bin/zb
 	if [[ "$USER" == "root" ]]; then
 		echo "$ROOT/selected/bin" > "/private/etc/paths.d/zlang"
 		echo -e "\033[93mWarning: Running as root! This is not recommended. Path is set by creating /etc/paths.d/zlang.\033[39m"
@@ -164,6 +166,7 @@ if [[ -z "$2" ]] || [[ "$2" == "default" ]] ; then
 			echo "Path is already set."
 		fi
 	fi
+
 
 	# Generate receipt
 	echo "Generating receipt..."
