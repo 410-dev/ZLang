@@ -1,0 +1,29 @@
+#!/bin/zsh
+
+function Architecture.isMacOS() {
+	out=$(uname -s)
+    if [[ "$out" == "Darwin" ]]; then
+        echo true
+    fi
+}
+
+function Architecture.isLinux() {
+    out=$(uname -s)
+    if [[ "$out" == "Linux" ]]; then
+        echo true
+    fi
+}
+
+function Architecture.isArm() {
+    out=$(uname -m)
+    if [[ ! -z "$(echo "$out" | grep "aarch")" ]] || [[ ! -z "$(echo "$out" | grep "arm")" ]]; then
+        echo true
+    fi
+}
+
+function Architecture.isX86() {
+    out=$(uname -m)
+    if [[ ! -z "$(echo "$out" | grep "x86")" ]]; then
+        echo true
+    fi
+}
