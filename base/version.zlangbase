@@ -1,5 +1,5 @@
 #!/bin/zsh
-export EBVERSION="2023MarC-preliminary"
+export EBVERSION="2023MarD-preliminary"
 export EBVERSION_MAJOR=2023
 export EBVERSION_MINOR="Mar"
 export EBVERSION_REVISION="C"
