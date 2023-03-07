@@ -37,7 +37,7 @@ if [[ -z "$(which curl)" ]]; then
 	fi
 fi
 
-if [[ -z "$(which zsh)" ]] && [[ "$5" == "--no-zsh-install" ]]; then
+if [[ -z "$(which zsh)" ]] && [[ ! "$5" == "--no-zsh-install" ]]; then
 	echo "Error: zsh is not installed."
 	if [[ ! -z "$(which apt-get)" ]]; then
 		echo "Trying to install zsh using apt-get..."
