@@ -88,5 +88,18 @@ class File() {
         return $?
     }
 
+    function copyTo() {
+        if [[ $(isNull) ]]; then
+            return
+        fi
+
+        cp -r "$(this get path)" "$1"
+        return $?
+    }
+
+    function toString() {
+        this get path
+    }
+
     execute "$@"
 }
