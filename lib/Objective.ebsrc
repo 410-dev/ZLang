@@ -1,5 +1,10 @@
 #!/bin/zsh
 
+if [[ -z "$ZSH_VERSION" ]]; then
+	echo "Error: Library 'Objective' is unsupported in non-zsh environment."
+    exit 9
+fi
+
 function @superclass() {
     source "$ZLANG_HOME/classes/$1.zshclass"
 }
