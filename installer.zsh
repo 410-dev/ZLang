@@ -1,5 +1,3 @@
-#!/bin/zsh
-
 export ROOT="$HOME/.local/zlang"
 
 # Actual localizing
@@ -16,7 +14,7 @@ fi
 
 MERGEDARGS="$(echo "$@")"
 
-echo "ZLang Installer Mar2023B"
+echo "ZLang Installer Mar2023C"
 echo "Requested Runtime: $runtimeVersionRequest"
 
 if [[ -z "$(which curl)" ]]; then
@@ -37,7 +35,26 @@ if [[ -z "$(which curl)" ]]; then
 		echo "Error: Failed to install curl. Please install curl manually."
 		exit 1
 	fi
-	exit 1
+fi
+
+if [[ -z "$(which zsh)" ]] && [[ "$5" == "--no-zsh-install" ]]; then
+	echo "Error: zsh is not installed."
+	if [[ ! -z "$(which apt-get)" ]]; then
+		echo "Trying to install zsh using apt-get..."
+		sudo apt-get install zsh -y
+	elif [[ ! -z "$(which pacman)" ]]; then
+		echo "Trying to install zsh using pacman..."
+		sudo pacman -S zsh
+	elif [[ ! -z "$(which dnf)" ]]; then
+		echo "Trying to install zsh using dnf..."
+		sudo dnf install zsh
+	elif [[ ! -z "$(which yum)" ]]; then
+		echo "Trying to install zsh using yum..."
+		sudo yum install zsh
+	else
+		echo "Error: Failed to install zsh. Please install zsh manually."
+		exit 1
+	fi
 fi
 
 if [[ "$runtimeVersionRequest" == "latest" ]]; then
