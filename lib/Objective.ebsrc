@@ -4,6 +4,7 @@ function @superclass() {
     source "$ZLANG_HOME/classes/$1.zshclass"
 }
 
+alias @importclass=':'
 alias class='function'
 alias free='unset'
 

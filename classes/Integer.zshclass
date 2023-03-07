@@ -1,6 +1,7 @@
 #!/bin/zsh
 
 @import Foundation/string
+@importclass Object
 
 class Integer() {
     @superclass Object
@@ -115,13 +116,6 @@ class Integer() {
             this set value "$buffer"
         fi
     }
-
-
-
-
-
-
-
 
     execute "$@"
 }

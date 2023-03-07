@@ -1,4 +1,6 @@
 #!/bin/zsh
+@importclass Object
+
 class String() {
     @superclass Object
     

@@ -1,5 +1,6 @@
 #!/bin/zsh
 @import Foundation/string
+@importclass Object
 
 class File() {
     @superclass Object
