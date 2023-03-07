@@ -14,7 +14,6 @@ class File() {
     }
 
     function isFile() {
-        isNull
         if [[ $(isNull) ]]; then
             return
         fi
