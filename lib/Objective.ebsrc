@@ -2,7 +2,7 @@
 
 if [[ -z "$ZSH_VERSION" ]]; then
 	echo "Error: Library 'Objective' is unsupported in non-zsh environment."
-    exit 9
+    return 9
 fi
 
 function @superclass() {
