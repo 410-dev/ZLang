@@ -19,7 +19,7 @@ Installer with options
 ```shell
 curl -Ls https://raw.githubusercontent.com/410-dev/ZLang/main/installer.zsh -o ./installer.sh
 chmod +x ./installer.sh
-./installer.sh <version> <location> [--bash] [--profile]
+zsh ./installer.sh <version> <location> [--bash] [--profile]
 rm -rf ./installer.sh
 ```
 
