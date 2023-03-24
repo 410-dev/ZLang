@@ -12,10 +12,6 @@ class Integer() {
         echo "$(this get value)"
     }
 
-    function toInt() {
-        echo "$(this get value)"
-    }
-
     function add() {
         if [[ $(String.isNull "$1") ]]; then
             export _EBASH_EXCEPTION="Addition operation"
@@ -95,6 +91,26 @@ class Integer() {
 
     function isLesserThan() {
         if [[ $1 -gt $(this get value) ]]; then
+            if [[ $(String.isNull "$2") ]]; then
+                echo "true"
+            else
+                export $2="true"
+            fi
+        fi
+    }
+
+    function isGreaterThanOrEqualTo() {
+        if [[ $(this get value) -ge $1 ]]; then
+            if [[ $(String.isNull "$2") ]]; then
+                echo "true"
+            else
+                export $2="true"
+            fi
+        fi
+    }
+
+    function isLesserThanOrEqualTo() {
+        if [[ $1 -ge $(this get value) ]]; then
             if [[ $(String.isNull "$2") ]]; then
                 echo "true"
             else
