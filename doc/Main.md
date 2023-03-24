@@ -33,7 +33,7 @@ ZLang is not strong typed language, therefore the parameters of function does no
 2. [Including script file](./Include.md)
 3. [NULL / null](./Null.md)
 4. [Run mode](./Runmode.md)
-5. [Setting working directory](./Working Directory.md)
+5. [Setting working directory](./WorkingDirectory.md)
 6. [Reading runtime version](./Version.md)
 7. [Defining Class](./Object.md)
 
